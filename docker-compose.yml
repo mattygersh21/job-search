@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: job-search-postgres
+    environment:
+      POSTGRES_DB: jobsearch
+      POSTGRES_USER: jobsearch_user
+      POSTGRES_PASSWORD: jobsearch_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - job-search-network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: job-search-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: jobsearch_admin
+      MONGO_INITDB_ROOT_PASSWORD: jobsearch_admin_password
+      MONGO_INITDB_DATABASE: jobsearch_docs
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-scripts/mongodb:/docker-entrypoint-initdb.d
+    networks:
+      - job-search-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  job-search-network:
+    driver: bridge 
