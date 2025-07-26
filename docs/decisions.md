@@ -6,6 +6,7 @@
 - **Database Choices:**
   - PostgreSQL for structured, relational data (job listings, user profiles, application status).
   - MongoDB for unstructured documents (resumes, cover letters, submission artifacts).
+- **Primary Key Strategy:** UUIDs preferred over sequential IDs for enhanced security, distributed system compatibility, and data privacy. UUIDs prevent enumeration attacks and work better in sharded architectures.
 - **Automation:** Playwright (Node.js) used for scraping and automating job applications on Indeed and LinkedIn.
 - **Containerization:** Docker Compose orchestrates Postgres, MongoDB, and optionally the backend for local development and portability.
 - **Docker Commands:** All Docker commands require `sudo` prefix due to daemon connection specifics. Use `docker compose` (not `docker-compose`) for all compose operations.

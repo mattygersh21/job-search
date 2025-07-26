@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: job-search-backend
+  
+  # PostgreSQL Configuration
+  datasource:
+    # Environment variables with default values: ${ENV_VAR:default_value}
+    # These are pulled from system environment variables, Docker environment, or .env files
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:jobsearch}
+    username: ${POSTGRES_USER:jobsearch_user}
+    password: ${POSTGRES_PASSWORD:jobsearch_password}
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      # validate: Checks that database schema matches entity definitions
+      # Will fail startup if schema doesn't match (safer for production)
+      ddl-auto: validate
+    # show-sql: false - Disables SQL query logging to console (better for production performance)
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: ${MONGO_DB:jobsearch_docs}
+      username: ${MONGO_USER:jobsearch_admin}
+      password: ${MONGO_PASSWORD:jobsearch_admin_password}
+      authentication-database: admin
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+# Logging Configuration
+logging:
+  level:
+    # Application-specific logging at DEBUG level for detailed troubleshooting
+    com.jobsearch.backend: DEBUG
+    # Spring Security logging for authentication/authorization debugging
+    org.springframework.security: DEBUG
+    # Hibernate SQL logging - shows actual SQL queries being executed
+    org.hibernate.SQL: DEBUG
+    # Hibernate parameter binding - shows parameter values in SQL queries
+    # Should be DISABLED in production for data privacy (currently enabled for development)
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    # Console output format: timestamp - message
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Application-specific Configuration
+jobsearch:
+  scraping:
+    indeed:
+      base-url: ${INDEED_BASE_URL:https://www.indeed.com}
+    linkedin:
+      base-url: ${LINKEDIN_BASE_URL:https://www.linkedin.com/jobs}
+    interval-hours: ${SCRAPING_INTERVAL_HOURS:6}
+  
+  security:
+    jwt:
+      secret: ${JWT_SECRET:your-secret-key-here}
+      expiration: 3600000 # 1 hour in milliseconds
+  
+  matching:
+    min-score: 0.7
+    max-jobs-per-day: 50 
