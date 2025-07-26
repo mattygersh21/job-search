@@ -1,0 +1,35 @@
+spring:
+  # Test database configuration
+  datasource:
+    # H2 in-memory database for unit tests - fast and isolated
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  
+  # JPA configuration for tests
+  jpa:
+    hibernate:
+      # create-drop: Creates schema at startup, drops it at shutdown
+      # Perfect for tests as each test gets a clean database
+      ddl-auto: create-drop
+    # show-sql: true - Enables SQL query logging for test debugging
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  # MongoDB configuration for tests
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: test_jobsearch_docs
+
+# Logging for tests
+logging:
+  level:
+    # Application-specific logging at DEBUG level for test troubleshooting
+    com.jobsearch.backend: DEBUG
+    # Spring Security logging for authentication/authorization test debugging
+    org.springframework.security: DEBUG 
